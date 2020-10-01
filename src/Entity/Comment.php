@@ -42,6 +42,12 @@ class Comment
      */
     private $photoFilename;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Conference::class, inversedBy="comments")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $conference;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -103,6 +109,18 @@ class Comment
     public function setPhotoFilename(?string $photoFilename): self
     {
         $this->photoFilename = $photoFilename;
+
+        return $this;
+    }
+
+    public function getConference(): ?Conference
+    {
+        return $this->conference;
+    }
+
+    public function setConference(?Conference $conference): self
+    {
+        $this->conference = $conference;
 
         return $this;
     }
