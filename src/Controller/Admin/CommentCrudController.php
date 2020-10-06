@@ -15,6 +15,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class CommentCrudController extends AbstractCrudController
 {
+    private $basePath;
+
+    public function __construct(string $photoDir) {
+        $this->basePath = $photoDir;
+    }
+
     public static function getEntityFqcn(): string
     {
         return Comment::class;
@@ -29,7 +35,7 @@ class CommentCrudController extends AbstractCrudController
             EmailField::new('email'),
             TextEditorField::new('text'),
             DateField::new('createdAt')->setFormat('short'),
-            TextField::new('photoFilename')
+            ImageField::new('photoFilename')->setBasePath('/uploads/photos')->setLabel('photo')->hideOnForm(),
         ];
     }
 
