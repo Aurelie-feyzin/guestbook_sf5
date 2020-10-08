@@ -12,6 +12,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Comment
 {
+    public const STATE_SUBMITTED = 'submitted';
+    public const STATE_SPAM = 'spam';
+    public const STATE_PUBLISHED = 'published';
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -53,6 +56,11 @@ class Comment
      * @ORM\JoinColumn(nullable=false)
      */
     private $conference;
+
+    /**
+     * @ORM\Column(type="string", length=255, options={"default": "constant('self::STATE_SUBMITTED')"})
+     */
+    private $state = self::STATE_SUBMITTED;
 
     public function getId(): ?int
     {
@@ -138,5 +146,17 @@ class Comment
     public function __toString(): string
     {
         return (string) $this->getEmail();
+    }
+
+    public function getState(): ?string
+    {
+        return $this->state;
+    }
+
+    public function setState(string $state): self
+    {
+        $this->state = $state;
+
+        return $this;
     }
 }
