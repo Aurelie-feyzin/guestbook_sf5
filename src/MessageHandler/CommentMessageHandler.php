@@ -69,7 +69,8 @@ class CommentMessageHandler implements MessageHandlerInterface
             $this->entityManager->flush();
             $this->bus->dispatch($message);
         } elseif ($this->workflow->can($comment, 'publish') || $this->workflow->can($comment, 'publish_ham')) {
-            $this->notifier->send(New CommentReviewNotification($comment), ...$this->notifier->getAdminRecipients());
+            $notification = new CommentReviewNotification($comment, $message->getReviewUrl());
+            $this->notifier->send($notification, ...$this->notifier->getAdminRecipients());
         } elseif ($this->workflow->can($comment, 'optimize')) {
             if ($comment->getPhotoFilename()) {
                 $this->imageOptimizer->resize($this->photoDir . '/' . $comment->getPhotoFilename());
