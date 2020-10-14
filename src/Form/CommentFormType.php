@@ -17,19 +17,30 @@ class CommentFormType extends AbstractType
     {
         $builder
             ->add('author', null, [
-                'label' => 'Your name'
+                'label' => 'your.name',
+                'translation_domain' => 'form',
             ])
-            ->add('text')
-            ->add('email', EmailType::class)
+            ->add('text', null, [
+                'label' => 'comment.text',
+                'translation_domain' => 'form',
+            ])
+            ->add('email', EmailType::class, [
+            'label' => 'email',
+                'translation_domain' => 'form',
+            ])
             ->add('photo', FileType::class, [
+                'label' => 'photo',
+                'translation_domain' => 'form',
                 'required' => false,
                 'mapped' => false,
                 'constraints' => [
                     new Image(['maxSize' => '1024k'])
                 ],
             ])
-            ->add('submit', SubmitType::class)
-        ;
+            ->add('submit', SubmitType::class, [
+                'label' => 'submit',
+                'translation_domain' => 'form',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

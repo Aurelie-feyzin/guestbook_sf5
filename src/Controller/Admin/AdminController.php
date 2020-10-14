@@ -22,7 +22,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Workflow\Registry;
 
 /**
- * @Route("/admin")
+ * @Route("/{_locale<%app.supported_locales%>}/admin")
  */
 class AdminController extends AbstractController
 {

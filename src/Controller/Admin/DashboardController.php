@@ -10,11 +10,20 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Router\CrudUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DashboardController extends AbstractDashboardController
 {
+    /** @var TranslatorInterface */
+    private $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     /**
-     * @Route("/admin", name="admin")
+     * @Route("/{_locale<%app.supported_locales%>}/admin", name="admin")
      */
     public function index(): Response
     {
@@ -25,8 +34,9 @@ class DashboardController extends AbstractDashboardController
 
     public function configureDashboard(): Dashboard
     {
+        $title = $this->translator->trans('Guestbook');
         return Dashboard::new()
-            ->setTitle('Guestbook');
+            ->setTitle($title);
     }
 
     public function configureMenuItems(): iterable
