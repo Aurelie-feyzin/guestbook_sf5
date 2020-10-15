@@ -1,0 +1,22 @@
+{
+    "name": null,
+    "results": [
+        {
+            "scenario": "\"Submit a comment on the Amsterdam conference page\"",
+            "values": {
+                "message_ids": [
+                    1
+                ],
+                "accept_url": "https://127.0.0.1:8000/en/admin/comment/review/66"
+            },
+            "error": null
+        }
+    ],
+    "message": "Build run successfully",
+    "code": 0,
+    "success": true,
+    "input": {
+        "path": ".blackfire.yaml",
+        "content": "scenarios: |\n  #!blackfire-player\n\n  group login\n      visit url('/en/login')\n          expect status_code() == 200\n      submit button(\"Sign in\")\n          param username \"admin\"\n          param password \"admin\"\n          expect status_code() == 302\n\n  scenario\n      name \"Submit a comment on the Amsterdam conference page\"\n      include login\n      visit url('/en/conference/amsterdam-2019')\n          expect status_code() == 200\n      submit button(\"Submit\")\n          param comment_form[author] 'Fabien'\n          param comment_form[email] 'me@example.com'\n          param comment_form[text] 'Such a good conference!'\n          expect status_code() == 302\n      follow\n          expect status_code() == 200\n          expect not(body() matches \"/Such a good conference/\")\n          # Wait for the workflow to validate the submissions\n          wait 5000\n      when env != \"prod\"\n          visit url(webmail_url ~ '/messages')\n              expect status_code() == 200\n              set message_ids json(\"[*].id\")\n          with message_id in message_ids\n              visit url(webmail_url ~ '/messages/' ~ message_id ~ '.html')\n                  expect status_code() == 200\n                  set accept_url css(\"table a\").first().attr(\"href\")\n              visit url(accept_url)\n                  # we don't check the status code as we can deal\n                  # with \"old\" messages which do not exist anymore\n                  # in the DB (would be a 404 then)\n      when env == \"prod\"\n          visit url('/admin/?entity=Comment&action=list')\n              expect status_code() == 200\n              set comment_ids css('table.table tbody tr').extract('data-id')\n          with id in comment_ids\n              visit url('/admin/comment/review/' ~ id)\n                  # we don't check the status code as we scan all comments,\n                  # including the ones already reviewed\n      visit url('/fr/')\n          wait 5000\n      visit url('/fr/conference/amsterdam-2019')\n          expect body() matches \"/Such a good conference/\"\n"
+    }
+}
