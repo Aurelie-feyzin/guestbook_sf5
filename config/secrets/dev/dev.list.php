@@ -1,6 +1,6 @@
 <?php
 
 return array (
-  'AKISMET_KEY' => NULL,
+  'AKISMEY_KEY' => NULL,
   'SLACK_DSN' => NULL,
 );
